@@ -1,4 +1,4 @@
-import { Task } from "./TaskListManager";
+import { Task, TaskListManager } from "./TaskListManager";
 import { TargetType, TaskType } from "common/types";
 import { Logger } from "utils/Logger";
 
@@ -13,25 +13,25 @@ export class Controller {
             case TaskType.Harvest:
                 const source = target as Source;
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source);
+                    this.moveTo(creep, task, source);
                 }
                 break;
             case TaskType.Transfer:
                 const structure = target as Structure;
                 if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(structure);
+                    this.moveTo(creep, task, structure);
                 }
                 break;
             case TaskType.UpgradeController:
                 const controller = target as StructureController;
                 if (creep.upgradeController(controller) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(controller);
+                    this.moveTo(creep, task, controller);
                 }
                 break;
             case TaskType.Build:
                 const constructionSite = target as ConstructionSite;
                 if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructionSite);
+                    this.moveTo(creep, task, constructionSite);
                 }
                 break;
             case TaskType.Repair:
@@ -39,16 +39,21 @@ export class Controller {
                 const repairSite = target as Structure;
                 Logger.log(creep, "try to repair!" + repairSite.structureType);
                 if (creep.repair(repairSite) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(repairSite);
-                    Logger.log(creep, "move to repair!");
+                    this.moveTo(creep, task, repairSite);
                 }
                 break;
             case TaskType.Withdraw:
                 const withdrawSite = target as Structure | Tombstone | Ruin;
                 Logger.log(creep, "try to withdraw Energy from!" + withdrawSite.id);
                 if (creep.withdraw(withdrawSite, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(withdrawSite);
-                    Logger.log(creep, "move to withdraw!");
+                    this.moveTo(creep, task, withdrawSite);
+                }
+                break;
+            case TaskType.PickUp:
+                const drop = target as Resource;
+                Logger.log(creep, "try to pickup resource!" + drop.id);
+                if (creep.pickup(drop) == ERR_NOT_IN_RANGE) {
+                    this.moveTo(creep, task, drop);
                 }
                 break;
             default:
@@ -68,5 +73,16 @@ export class Controller {
         }
 
         return true;
+    }
+
+    private moveTo(creep: Creep, task: Task, roomPosition: RoomObject) {
+        if (creep.memory.logging.active) {
+            creep.moveTo(roomPosition, { visualizePathStyle: { opacity: 1, stroke: '#ffaa00' } });
+        }
+        else {
+            creep.moveTo(roomPosition);
+        }
+        Logger.log(creep, "move to " + task.taskType);
+
     }
 }

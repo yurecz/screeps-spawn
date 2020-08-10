@@ -1,8 +1,8 @@
 export class Logger {
 
     public static log(creep: Creep, message?: any, ...optionalParams: any[]): void {
-        if (creep.memory.logging) {
-           console.log(message, optionalParams);
-        } else creep.memory.logging = false;
+        if (creep.memory.logging.active) {
+            console.log(message, optionalParams);
+        }
     }
 }

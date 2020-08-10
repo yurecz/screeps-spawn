@@ -1,7 +1,7 @@
 
 declare interface CreepMemory {
-  logging:boolean;
+  logging: { active: boolean, flagID: string };
   taskDuration: any;
   role: import("screepRoles").ScreepRole;
-  task: {taskType: import("./common/types").TaskType, targetID:string|undefined, duration: import("./common/types").Timer};
+  task: { taskType: import("./common/types").TaskType, targetID: string | undefined, duration: import("./common/types").Timer };
 }

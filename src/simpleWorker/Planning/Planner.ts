@@ -49,7 +49,7 @@ export class Planner {
 
             const ruins = room.find(FIND_RUINS, {
                 filter: (ruins) => {
-                    return (ruins.store.getUsedCapacity()> 0)
+                    return (ruins.store.energy > 0)
                 }
             });
             for (const ruin of ruins) {
@@ -58,11 +58,16 @@ export class Planner {
 
             const tombstones = room.find(FIND_TOMBSTONES, {
                 filter: (tombstone) => {
-                    return (tombstone.store.getUsedCapacity()> 0)
+                    return (tombstone.store.energy > 0)
                 }
             });
             for (const tombstone of tombstones) {
                 this.goals.push({ taskType: TaskType.Withdraw, target: tombstone });
+            }
+
+            const drops = room.find(FIND_DROPPED_RESOURCES);
+            for (const drop of drops) {
+                this.goals.push({ taskType: TaskType.PickUp, target: drop });
             }
 
             const controller = room.controller;
@@ -83,7 +88,7 @@ export class Planner {
             }
 
             const fortificationSites = room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < 1000 && ( object.structureType == STRUCTURE_WALL || object.structureType == STRUCTURE_RAMPART )
+                filter: object => object.hits < 1000 && (object.structureType == STRUCTURE_WALL || object.structureType == STRUCTURE_RAMPART)
             });
             for (const fortificationSite of fortificationSites) {
                 this.goals.push({ taskType: TaskType.Fortification, target: fortificationSite });
@@ -105,7 +110,11 @@ export class Planner {
             weightedGoals = _.sortByOrder(weightedGoals, ['score'], ['desc']);
 
             const weightedGoal = weightedGoals[0];
-            return { creep: creep, taskType: weightedGoal.goal.taskType, target: weightedGoal.goal.target };
+            if (weightedGoal.score !== 0) {
+                return { creep: creep, taskType: weightedGoal.goal.taskType, target: weightedGoal.goal.target };
+            } else {
+                return { creep: creep, taskType: TaskType.Idle };
+            }
         }
         return { creep: creep, taskType: TaskType.Idle };
     }

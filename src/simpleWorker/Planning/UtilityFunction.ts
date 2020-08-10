@@ -16,7 +16,6 @@ export class UtilityFunction {
         FortificationPriority(goal);
 
         const taskTypeImportance = TaskTypeImportance(goal);
-
         const relativeCreepCapacity = RelativeCreepCapacity(creep, goal);
         const distanceToTargetWeight = DistanceToTargetWeight(creep, goal);
         const targetRelativeCapacity = TargetRelativeCapacity(goal);

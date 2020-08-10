@@ -16,6 +16,8 @@ export function TaskTypeImportance(goal: Goal): Score {
             return PlanningPriority.repair;
         case TaskType.Fortification:
             return PlanningPriority.fortification;
+        case TaskType.PickUp:
+            return PlanningPriority.pickup;
         default:
             return 1;
     }

@@ -19,5 +19,6 @@ export enum TaskType{
     Build = "Build",
     Repair = "Repair",
     Fortification = "Fortification",
-    Withdraw = "Withdraw"
+    Withdraw = "Withdraw",
+    PickUp = "Pick-up",
 }
